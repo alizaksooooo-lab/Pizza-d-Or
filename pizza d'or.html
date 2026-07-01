@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza d'Or - Delivery Menu</title>
+    <style>
+        :root {
+            /* Classic Dark Blue & Gold Palette */
+            --bg-main: #0a1128;         /* Deep Midnight Blue background */
+            --bg-surface: #121f45;      /* Rich Dark Navy for the menu card */
+            --accent-gold: #dfb743;     /* Polished Classic Gold */
+            --accent-gold-glow: #f3d375;/* Light Gold for subtle highlights */
+            --text-light: #ffffff;      /* Pure white for primary text */
+            --text-muted: #8da2cf;      /* Muted slate blue for secondary text */
+            --border-gold: #bc9832;     /* Darker gold for borders */
+            --border-inline: #25396d;   /* Subtle blue-gray for separators */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .menu-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--bg-surface);
+            border: 2px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 40px 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 
+                        inset 0 0 15px rgba(223, 183, 67, 0.15);
+            position: relative;
+        }
+
+        /* Subtle classic corner borders frame */
+        .menu-container::before {
+            content: '';
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(223, 183, 67, 0.2);
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        header h1 {
+            color: var(--accent-gold);
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Category Navigation Buttons */
+        .menu-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-btn {
+            flex: 1;
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-inline);
+            padding: 12px 20px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            color: var(--accent-gold-glow);
+            border-color: var(--accent-gold);
+            background-color: rgba(223, 183, 67, 0.05);
+        }
+
+        .nav-btn.active {
+            background-color: var(--accent-gold);
+            color: var(--bg-main);
+            border-color: var(--accent-gold);
+            box-shadow: 0 4px 12px rgba(223, 183, 67, 0.3);
+        }
+
+        /* Page/Category Visibility */
+        .menu-page {
+            display: none; /* Hidden by default */
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .menu-page.active {
+            display: block; /* Shown when active */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .category-title {
+            color: var(--accent-gold-glow);
+            font-size: 1.6rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-gold);
+            padding-bottom: 6px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .item-dots {
+            flex-grow: 1;
+            border-bottom: 1px dotted var(--border-inline);
+            margin: 0 12px;
+            position: relative;
+            top: -4px;
+        }
+
+        .item-price {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+            white-space: nowrap;
+        }
+
+        .item-description {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: -6px;
+            margin-bottom: 20px;
+            padding-left: 2px;
+            line-height: 1.4;
+        }
+
+        .pizza-sizes {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: -6px;
+            margin-bottom: 22px;
+            padding-left: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        .size-highlight {
+            color: var(--accent-gold-glow);
+            font-weight: 600;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 25px;
+            border-top: 1px solid var(--border-inline);
+            padding-top: 20px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-container">
+        <header>
+            <h1>Pizza d'Or</h1>
+            <p>Delivery Menu</p>
+        </header>
+
+        <!-- Dynamic Page Tabs/Buttons -->
+        <div class="menu-nav">
+            <button class="nav-btn active" onclick="switchPage('manakish-page', this)">Manakish</button>
+            <button class="nav-btn" onclick="switchPage('pizza-page', this)">Pizza</button>
+        </div>
+
+        <!-- PAGE 1: Manakish -->
+        <div id="manakish-page" class="menu-page active">
+            <h2 class="category-title">Traditional Man2oush</h2>
+            
+            <div class="menu-item">
+                <span class="item-name">1. Zaatar</span>
+                <span class="item-dots"></span>
+                <span class="item-price">60,000 L.L.</span>
+            </div>
+            <div class="item-description">Classic thyme mixed with oil, baked to golden perfection on fresh dough.</div>
+
+            <div class="menu-item">
+                <span class="item-name">2. Jebneh</span>
+                <span class="item-dots"></span>
+                <span class="item-price">150,000 L.L.</span>
+            </div>
+            <div class="item-description">Rich, melted traditional white cheese blend over a soft crust.</div>
+
+            <div class="menu-item">
+                <span class="item-name">3. Nes Zaatar Nes Jebneh</span>
+                <span class="item-dots"></span>
+                <span class="item-price">100,000 L.L.</span>
+            </div>
+            <div class="item-description">The perfect compromise: half traditional zaatar and half premium cheese.</div>
+
+            <div class="menu-item">
+                <span class="item-name">4. Arich</span>
+                <span class="item-dots"></span>
+                <span class="item-price">—</span>
+            </div>
+            <div class="item-description">Traditional curd cheese man2oush, lightly seasoned and fresh.</div>
+        </div>
+
+        <!-- PAGE 2: Pizza -->
+        <div id="pizza-page" class="menu-page">
+            <h2 class="category-title">Gourmet Pizza</h2>
+            
+            <div class="menu-item">
+                <span class="item-name">1. Pepperoni</span>
+                <span class="item-dots"></span>
+                <span class="item-price">From 500 L.L.</span>
+            </div>
+            <div class="item-description">Premium beef pepperoni slices layered over rich tomato sauce and stringy mozzarella.</div>
+            <div class="pizza-sizes">Sizes: Small: <span class="size-highlight">500 L.L.</span> | Medium: <span class="size-highlight">9$</span> | Large: <span class="size-highlight">13$</span></div>
+
+            <div class="menu-item">
+                <span class="item-name">2. Khedra (Vegetable)</span>
+                <span class="item-dots"></span>
+                <span class="item-price">From 500 L.L.</span>
+            </div>
+            <div class="item-description">Fresh bell peppers, onions, black olives, sweet corn, and mushrooms.</div>
+            <div class="pizza-sizes">Sizes: Small: <span class="size-highlight">500 L.L.</span> | Medium: <span class="size-highlight">9$</span> | Large: <span class="size-highlight">13$</span></div>
+
+            <div class="menu-item">
+                <span class="item-name">3. Sejouk</span>
+                <span class="item-dots"></span>
+                <span class="item-price">From 500 L.L.</span>
+            </div>
+            <div class="item-description">Spiced local sejouk sausage crumbles with onions and extra melted cheese.</div>
+            <div class="pizza-sizes">Sizes: Small: <span class="size-highlight">500 L.L.</span> | Medium: <span class="size-highlight">9$</span> | Large: <span class="size-highlight">13$</span></div>
+        </div>
+
+        <div class="footer-note">
+            <p>Call us to place your delivery order</p>
+        </div>
+    </div>
+
+    <!-- Page Control Logic -->
+    <script>
+        function switchPage(pageId, buttonElement) {
+            // Hide all menu pages
+            const pages = document.querySelectorAll('.menu-page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Remove active style from all nav buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show current selected page and highlight button
+            document.getElementById(pageId).classList.add('active');
+            buttonElement.classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
